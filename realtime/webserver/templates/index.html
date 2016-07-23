@@ -1,0 +1,28 @@
+<script src="{{url_for('static', filename='js/socket.io-1.4.5.js')}}"></script>
+
+<h1>Flask SQLAlchemy and SocketIO demo</h1>
+
+<a href='/delete'>Delete all updates</a>
+
+<h3>Updates</h3>
+<ul id="update-list">
+    {% for update in updates %}
+    <li>{{update.type}} at {{update.id}}</li>
+    {% endfor %}
+</ul>
+
+<script>
+    var socket = io.connect('/browser');
+    document.onbeforeunload = function() {
+        console.log('Disconnecting from SocketIO ...');
+        socket.disconnect();
+    };
+    socket.on('connect', function() {
+        console.log('SocketIO connected.');
+    });
+    socket.on('new_update', function(data) {
+        var el = document.createElement('li');
+        el.innerHTML = data;
+        document.getElementById("update-list").appendChild(el);
+    });
+</script>
