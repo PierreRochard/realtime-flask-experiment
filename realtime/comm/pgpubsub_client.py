@@ -21,12 +21,14 @@ def listen_thread():
                 with app.app_context():
                     data = json.loads(e.payload)
                     with open('output.json', 'w') as output:
-                        output.write(json.dumps(e.payload))
-                    socketio.emit(
-                        'new_update',
-                        data['type'] + ' at ' + str(data['id']),
-                        namespace='/browser',
-                    )
+                        json.dump(data, output, indent=4, sort_keys=True)
+                    if data['type'] == 'INSERT' or data['type'] == 'UPDATE':
+                        data = data['row']
+                        socketio.emit(
+                            'new_update',
+                            data['message'] + ' at ' + str(data['timestamp']),
+                            namespace='/browser',
+                        )
 
 
 @app.before_first_request

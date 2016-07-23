@@ -8,7 +8,6 @@ from realtime.database.adapter import db
 blueprint = flask.Blueprint(__name__, __name__)
 
 
-
 @blueprint.route('/')
 def index():
     updates = Updates.query.all()
