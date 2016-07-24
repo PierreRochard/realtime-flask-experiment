@@ -19,19 +19,21 @@ def listen_thread():
                 pass
             else:
                 with app.app_context():
-                    data = json.loads(e.payload)
-                    with open('output.json', 'w') as output:
-                        json.dump(data, output, indent=4, sort_keys=True)
-                    if data['type'] == 'INSERT':
-                        socketio.emit('insert', data['row'], namespace='/browser')
-                    elif data['type'] == 'UPDATE':
-                        socketio.emit('update', data['row'], namespace='/browser')
-                    elif data['type'] == 'DELETE':
-                        socketio.emit('delete', data['row'], namespace='/browser')
+                    process_message(e)
 
+
+def process_message(e):
+    data = json.loads(e.payload)
+    with open('output.json', 'w') as output:
+        json.dump(data, output, indent=4, sort_keys=True)
+    if data['type'] == 'INSERT':
+        socketio.emit('insert', data['row'], namespace='/browser')
+    elif data['type'] == 'UPDATE':
+        socketio.emit('update', data['row'], namespace='/browser')
+    elif data['type'] == 'DELETE':
+        socketio.emit('delete', data['row'], namespace='/browser')
 
 
 @app.before_first_request
 def start_listener():
-    print 'spawning pgpubsub'
     spawn(listen_thread)

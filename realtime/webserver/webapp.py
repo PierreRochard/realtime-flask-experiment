@@ -1,12 +1,10 @@
-from __future__ import absolute_import
+from flask import Flask
 
-import flask
-
-from . import views
+from realtime.webserver import views
 from realtime.database.adapter import db
 
 
-app = flask.Flask(__name__)
+app = Flask(__name__)
 app.config.from_object('realtime.config')
 
 app.register_blueprint(views.blueprint)

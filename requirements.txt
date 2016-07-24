@@ -1,1 +1,4 @@
 eventlet
+flask
+Flask-SocketIO
+pgpubsub
