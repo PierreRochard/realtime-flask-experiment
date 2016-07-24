@@ -22,13 +22,13 @@ def listen_thread():
                     data = json.loads(e.payload)
                     with open('output.json', 'w') as output:
                         json.dump(data, output, indent=4, sort_keys=True)
-                    if data['type'] == 'INSERT' or data['type'] == 'UPDATE':
-                        data = data['row']
-                        socketio.emit(
-                            'new_update',
-                            data['message'] + ' at ' + str(data['timestamp']),
-                            namespace='/browser',
-                        )
+                    if data['type'] == 'INSERT':
+                        socketio.emit('insert', data['row'], namespace='/browser')
+                    elif data['type'] == 'UPDATE':
+                        socketio.emit('update', data['row'], namespace='/browser')
+                    elif data['type'] == 'DELETE':
+                        socketio.emit('delete', data['row'], namespace='/browser')
+
 
 
 @app.before_first_request

@@ -22,12 +22,13 @@ def runserver(debug=False, use_reloader=False):
 
 @manager.command
 def add():
-    u = Updates(message='Added from command-line')
-    with app.app_context():
-        print 'Committing to database ...'
-        db.session.add(u)
-        db.session.commit()
-    print 'Added.'
+    for i in range(0, 10):
+        u = Updates(message='Added from command-line')
+        with app.app_context():
+            print 'Committing to database ...'
+            db.session.add(u)
+            db.session.commit()
+        print 'Added.'
 
 
 @manager.command
