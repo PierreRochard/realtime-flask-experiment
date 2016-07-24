@@ -3,7 +3,7 @@
     Flask SQLAlchemy and SocketIO demo
 </h1>
 
-<a href='/delete'>
+<a href="{{ url_for('realtime.webserver.views.delete') }}">
     Delete all updates
 </a>
 
@@ -20,28 +20,33 @@
 
 
 <script>
-    var socket = io.connect('/browser');
-    document.onbeforeunload = function() {
+    var socket = io.connect('/browser', {
+        'reconnection': true,
+        'reconnectionDelay': 500,
+        'randomizationFactor': 0.5,
+        'reconnectionAttempts': 'Infinity'
+    });
+    document.onbeforeunload = function () {
         console.log('Disconnecting from SocketIO ...');
         socket.disconnect();
     };
-    socket.on('connect', function() {
+    socket.on('connect', function () {
         console.log('SocketIO connected.');
     });
-    socket.on('insert', function(data) {
+    socket.on('insert', function (data) {
         var new_version = document.createElement('li');
         new_version.setAttribute("id", data['id']);
         new_version.innerHTML = data['message'] + ' at ' + data['timestamp'];
         document.getElementById("update-list").appendChild(new_version);
     });
-    socket.on('update', function(data) {
+    socket.on('update', function (data) {
         var old_version = document.getElementById(data['id']);
         var new_version = document.createElement('li');
         new_version.setAttribute("id", data['id']);
         new_version.innerHTML = data['message'] + ' at ' + data['timestamp'];
         document.getElementById("update-list").replaceChild(new_version, old_version);
     });
-    socket.on('delete', function(data) {
+    socket.on('delete', function (data) {
         var old_version = document.getElementById(data['id']);
         document.getElementById("update-list").removeChild(old_version);
     });
