@@ -26,6 +26,8 @@ def process_message(e):
     data = json.loads(e.payload)
     with open('output.json', 'w') as output:
         json.dump(data, output, indent=4, sort_keys=True)
+    # TODO: Query the table if 'row' is not in the data dictionary
+    # (due to pg_notify's 8kB payload limit)
     if data['type'] == 'INSERT':
         socketio.emit('insert', data['row'], namespace='/browser')
     elif data['type'] == 'UPDATE':
