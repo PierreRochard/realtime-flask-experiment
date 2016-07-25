@@ -9,7 +9,7 @@ BEGIN
     id = NEW.id;
     json_record = row_to_json(NEW);
 
-    --   If you wanted to get really fancy, you could create a DIFF from the OLD row to NEW row on updates, and create a change feed
+--   Creates a DIFF from the OLD row to NEW row on updates, and create a change feed
 --   ELSEIF  TG_OP = 'UPDATE' THEN
 --     id = NEW.id;
 --     json_record = jsonb_diff_val(row_to_json(NEW)::JSONB, row_to_json(OLD)::JSONB);
@@ -24,11 +24,19 @@ BEGIN
     payload = json_build_object('table', TG_TABLE_NAME, 'id', id, 'type', TG_OP)::text;
   END IF;
   PERFORM pg_notify('table_update', payload);
-
-
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
+
+DROP TRIGGER users_notify_update ON flask.updates;
+CREATE TRIGGER users_notify_update AFTER UPDATE ON flask.updates FOR EACH ROW EXECUTE PROCEDURE table_update_notify();
+
+DROP TRIGGER users_notify_insert ON flask.updates;
+CREATE TRIGGER users_notify_insert AFTER INSERT ON flask.updates FOR EACH ROW EXECUTE PROCEDURE table_update_notify();
+
+DROP TRIGGER users_notify_delete ON flask.updates;
+CREATE TRIGGER users_notify_delete AFTER DELETE ON flask.updates FOR EACH ROW EXECUTE PROCEDURE table_update_notify();
+
 
 CREATE OR REPLACE FUNCTION jsonb_diff_val(val1 JSONB,val2 JSONB)
 RETURNS JSONB AS $$
@@ -48,12 +56,3 @@ BEGIN
    RETURN result;
 END;
 $$ LANGUAGE plpgsql;
-
-DROP TRIGGER users_notify_update ON flask.updates;
-CREATE TRIGGER users_notify_update AFTER UPDATE ON flask.updates FOR EACH ROW EXECUTE PROCEDURE table_update_notify();
-
-DROP TRIGGER users_notify_insert ON flask.updates;
-CREATE TRIGGER users_notify_insert AFTER INSERT ON flask.updates FOR EACH ROW EXECUTE PROCEDURE table_update_notify();
-
-DROP TRIGGER users_notify_delete ON flask.updates;
-CREATE TRIGGER users_notify_delete AFTER DELETE ON flask.updates FOR EACH ROW EXECUTE PROCEDURE table_update_notify();
