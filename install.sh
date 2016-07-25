@@ -4,12 +4,12 @@ createdb realtime;
 
 psql -d realtime -c "CREATE SCHEMA flask";
 
-pip2 install -r requirements.txt;
+pip install -r requirements.txt;
 
-python2 manage.py db init;
+python manage.py db init;
 
-python2 manage.py db migrate;
+python manage.py db migrate;
 
-python2 manage.py db upgrade;
+python manage.py db upgrade;
 
 psql -d realtime -f realtime/database/create_triggers.sql
