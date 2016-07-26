@@ -1,6 +1,7 @@
 # realtime-flask-experiment
 Experimenting with PostgreSQL's Listen/Notify and Flask-SocketIO
 
+Blog post: https://rochard.org/personal-projects/realtime-flask-with-socketio-and-postgresql/
 
 Flask part is largely from https://github.com/lukeyeager/flask-sqlalchemy-socketio-demo
 
