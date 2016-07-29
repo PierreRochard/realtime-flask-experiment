@@ -1,0 +1,40 @@
+{% extends 'admin/model/list.html' %}
+
+{% block realtime %}
+    super()
+    <script src="{{url_for('static', filename='js/socket.io-1.4.5.js')}}"></script>
+    <script>
+        var list_columns = {{ list_columns|safe }};
+        console.log(list_columns);
+        var socket = io.connect('/browser', {
+            'reconnection': true,
+            'reconnectionDelay': 500,
+            'randomizationFactor': 0.5,
+            'reconnectionAttempts': 'Infinity'
+        });
+        document.onbeforeunload = function () {
+            console.log('Disconnecting from SocketIO ...');
+            socket.disconnect();
+        };
+        socket.on('connect', function () {
+            console.log('SocketIO connected.');
+        });
+        socket.on('insert', function (data) {
+            var new_row = document.createElement('td');
+            new_row.setAttribute("id", data['id']);
+            new_row.innerHTML = data['message'] + ' at ' + data['timestamp'];
+            document.getElementById('flask-admin-table').appendChild(new_row);
+        });
+        socket.on('update', function (data) {
+            var old_version = document.getElementById(data['id']);
+            var new_version = document.createElement('li');
+            new_version.setAttribute("id", data['id']);
+            new_version.innerHTML = data['message'] + ' at ' + data['timestamp'];
+            document.getElementById("update-list").replaceChild(new_version, old_version);
+        });
+        socket.on('delete', function (data) {
+            var old_version = document.getElementById(data['id']);
+            document.getElementById("update-list").removeChild(old_version);
+        });
+    </script>
+{% endblock %}

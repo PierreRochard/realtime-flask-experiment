@@ -7,8 +7,10 @@ from realtime.database.adapter import db
 
 admin = Admin(name='realtime', template_mode='bootstrap3', url='/')
 
+class RealtimeModelView(ModelView):
+    list_template = 'realtime.html'
 
-admin.add_view(ModelView(Updates, db.session))
+admin.add_view(RealtimeModelView(Updates, db.session))
 
 # @blueprint.route('/')
 # def index():
