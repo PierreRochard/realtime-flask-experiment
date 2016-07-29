@@ -1,19 +1,23 @@
 from flask import render_template, redirect, Blueprint, url_for
+from flask_admin import Admin
+from flask_admin.contrib.sqla import ModelView
 
 from realtime.database.models import Updates
 from realtime.database.adapter import db
 
-blueprint = Blueprint(__name__, __name__)
+admin = Admin(name='realtime', template_mode='bootstrap3', url='/')
 
 
-@blueprint.route('/')
-def index():
-    updates = Updates.query.all()
-    return render_template('index.html', updates=updates)
+admin.add_view(ModelView(Updates, db.session))
 
-
-@blueprint.route('/delete')
-def delete():
-    Updates.query.delete()
-    db.session.commit()
-    return redirect(url_for('.index'))
+# @blueprint.route('/')
+# def index():
+#     updates = Updates.query.all()
+#     return render_template('index.html', updates=updates)
+#
+#
+# @blueprint.route('/delete')
+# def delete():
+#     Updates.query.delete()
+#     db.session.commit()
+#     return redirect(url_for('.index'))
