@@ -8,8 +8,10 @@ blueprint = Blueprint(__name__, __name__)
 
 @blueprint.route('/')
 def index():
-    updates = Updates.query.all()
-    return render_template('index.html', updates=updates)
+    updates = db.session.execute('SELECT row_to_json(t) as j from flask.updates as t;')
+    updates_json = [u for u, in updates]
+    columns = [k for k in updates_json[0]]
+    return render_template('index.html', updates=updates_json, columns=columns)
 
 
 @blueprint.route('/delete')
