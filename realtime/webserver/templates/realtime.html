@@ -5,7 +5,6 @@
     <script src="{{url_for('static', filename='js/socket.io-1.4.5.js')}}"></script>
     <script>
         var list_columns = {{ list_columns|safe }};
-        console.log(list_columns);
         var socket = io.connect('/browser', {
             'reconnection': true,
             'reconnectionDelay': 500,
@@ -20,21 +19,21 @@
             console.log('SocketIO connected.');
         });
         socket.on('insert', function (data) {
-            var new_row = document.createElement('td');
+            var new_row = document.createElement('tr');
             new_row.setAttribute("id", data['id']);
-            new_row.innerHTML = data['message'] + ' at ' + data['timestamp'];
-            document.getElementById('flask-admin-table').appendChild(new_row);
-        });
-        socket.on('update', function (data) {
-            var old_version = document.getElementById(data['id']);
-            var new_version = document.createElement('li');
-            new_version.setAttribute("id", data['id']);
-            new_version.innerHTML = data['message'] + ' at ' + data['timestamp'];
-            document.getElementById("update-list").replaceChild(new_version, old_version);
-        });
-        socket.on('delete', function (data) {
-            var old_version = document.getElementById(data['id']);
-            document.getElementById("update-list").removeChild(old_version);
+            var checkbox_cell = document.createElement('td');
+            new_row.appendChild(checkbox_cell);
+            var actions_cell = document.createElement('td');
+            new_row.appendChild(actions_cell);
+            for (let column of list_columns) {
+                column = column.toLowerCase();
+                var column_cell = document.createElement('td');
+                column_cell.setAttribute('id', typeof(column));
+                column_cell.setAttribute('class', 'col-' + column);
+                column_cell.innerText = data[column];
+                new_row.appendChild(column_cell);
+            }
+            document.getElementById('flask-admin-table').lastChild.appendChild(new_row);
         });
     </script>
 {% endblock %}

@@ -90,3 +90,5 @@ ENV/
 
 .idea
 migrations
+
+*.json
