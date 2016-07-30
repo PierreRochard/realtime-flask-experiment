@@ -91,4 +91,5 @@ ENV/
 .idea
 migrations
 
-*.json
+output.json
+server/webserver/client/node_modules

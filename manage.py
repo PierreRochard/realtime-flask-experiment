@@ -1,12 +1,11 @@
 import flask_migrate
 import flask_script
+from server.models import db
+from server.socketio import socketio
 
-from realtime.database import models
-from realtime.database.adapter import db
-from realtime.database.models import Updates
-import realtime.database.pgpubsub_client
-from realtime.webserver.socketio import socketio
-from realtime.webserver.webapp import app
+from server import models
+from server.models import Updates
+from server.rest_api import app
 
 manager = flask_script.Manager(app)
 flask_migrate.Migrate(app, db)
