@@ -19,7 +19,7 @@ module.exports = {
       ]
   },
   output: {
-    path: __dirname + "/server/static/js/",
+    path: __dirname + "/server/templates/js/",
     filename: "client.min.js"
   },
   plugins: debug ? [] : [
