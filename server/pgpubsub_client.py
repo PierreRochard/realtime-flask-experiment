@@ -2,7 +2,7 @@ import json
 
 import eventlet
 import pgpubsub
-from server.webserver.socketio import socketio
+from server.socketio import socketio
 
 from server.rest_api import app
 

@@ -17,7 +17,6 @@ def index():
 class UpdatesList(Resource):
     def get(self):
         updates = [u for u, in db.session.execute('SELECT row_to_json(t) AS j FROM flask.updates AS t;')]
-        print(updates)
         return updates
 
 api.add_resource(UpdatesList, '/updates')

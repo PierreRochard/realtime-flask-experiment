@@ -1,10 +1,8 @@
 import flask_migrate
 import flask_script
-from server.models import db
-from server.socketio import socketio
 
-from server import models
-from server.models import Updates
+from server.socketio import socketio
+from server.models import Updates, db
 from server.rest_api import app
 
 manager = flask_script.Manager(app)
@@ -31,7 +29,7 @@ def add():
 @manager.command
 def delete():
     with app.app_context():
-        models.Updates.query.delete()
+        Updates.query.delete()
         db.session.commit()
     print('Deleted all updates.')
 
