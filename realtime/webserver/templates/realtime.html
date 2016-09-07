@@ -1,7 +1,6 @@
 {% extends 'admin/model/list.html' %}
 
 {% block realtime %}
-    super()
     <script src="{{url_for('static', filename='js/socket.io-1.4.5.js')}}"></script>
     <script>
         var list_columns = {{ list_columns|safe }};
