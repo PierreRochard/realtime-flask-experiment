@@ -1,10 +1,11 @@
 import json
-
+from flask import request
 import eventlet
 import pgpubsub
 from server.socketio import socketio
 
-from server.rest_api import app
+from server.rest_api import app, redis_store
+import sys
 
 eventlet.monkey_patch()
 spawn = eventlet.spawn
@@ -24,13 +25,15 @@ def listen_thread():
 
 def process_message(e):
     data = json.loads(e.payload)
-    with open('output.json', 'w') as output:
+    with open('json_output.json', 'w') as output:
         json.dump(data, output, indent=4, sort_keys=True)
+
     # TODO: Query the table if 'row' is not in the data dictionary
     # (due to pg_notify's 8kB payload limit)
     if data['type'] == 'INSERT':
         socketio.emit('insert', data['row'], namespace='/browser')
     elif data['type'] == 'UPDATE':
+        clients = redis_store.get()
         socketio.emit('update', data['row'], namespace='/browser')
     elif data['type'] == 'DELETE':
         socketio.emit('delete', data['row'], namespace='/browser')

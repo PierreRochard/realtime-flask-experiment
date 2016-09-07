@@ -4,6 +4,7 @@ import flask_script
 from server.socketio import socketio
 from server.models import Updates, db
 from server.rest_api import app
+from server import pgpubsub_client
 
 manager = flask_script.Manager(app)
 flask_migrate.Migrate(app, db)
