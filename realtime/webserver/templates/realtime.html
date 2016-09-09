@@ -16,6 +16,7 @@
         };
         socket.on('connect', function () {
             console.log('SocketIO connected.');
+
         });
         socket.on('insert', function (data) {
             var new_row = document.createElement('tr');
