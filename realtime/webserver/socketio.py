@@ -30,7 +30,7 @@ def on_connect_browser():
 
 
 @socketio.on('ids', namespace='/browser')
-def on_ids(message):
+def on_message(message):
     print(message)
 
 

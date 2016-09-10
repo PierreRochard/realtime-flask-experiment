@@ -15,8 +15,8 @@
             socket.disconnect();
         };
         socket.on('connect', function () {
-            console.log('SocketIO connected.');
-
+            console.log('SocketIO connected {{ session_id }}.');
+            socket.emit('ids', {{ ids|safe }})
         });
         socket.on('insert', function (data) {
             var new_row = document.createElement('tr');

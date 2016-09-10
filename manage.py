@@ -15,6 +15,8 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 
 @manager.command
 def runserver(debug=True, use_reloader=True):
+    db.drop_all(bind='sessions_db')
+    db.create_all(bind='sessions_db')
     socketio.run(app, port=5001, debug=debug, use_reloader=use_reloader)
 
 
@@ -35,6 +37,13 @@ def delete():
         models.Updates.query.delete()
         db.session.commit()
     print('Deleted all updates.')
+
+
+@manager.command
+def create_dbs():
+    with app.app_context():
+        db.create_all()
+        db.create_all(bind='sessions_db')
 
 
 if __name__ == '__main__':

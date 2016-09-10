@@ -92,3 +92,8 @@ ENV/
 migrations
 
 *.json
+
+node_modules/*
+
+secret_key
+*.db
