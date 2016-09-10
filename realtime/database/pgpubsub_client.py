@@ -32,7 +32,7 @@ def process_message(e):
     # TODO: Query the table if 'row' is not in the data dictionary
     # (due to pg_notify's 8kB payload limit)
     if data['type'] == 'INSERT':
-        socketio.emit('insert', data['row'], namespace='/browser')
+        socketio.emit('insert', data['row'], namespace='/')
     elif data['type'] == 'UPDATE':
         socket_io_clients = (
             db.session.query(SessionRows.socket_io_id)
@@ -44,10 +44,10 @@ def process_message(e):
         for client, in socket_io_clients:
             socketio.emit('update',
                           data['row'],
-                          namespace='/browser',
+                          namespace='/',
                           room=client)
     elif data['type'] == 'DELETE':
-        socketio.emit('delete', data['row'], namespace='/browser')
+        socketio.emit('delete', data['row'], namespace='/')
 
 
 @app.before_first_request

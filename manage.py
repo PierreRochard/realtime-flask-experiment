@@ -1,8 +1,11 @@
 import random
 import string
+from datetime import datetime
 
 import flask_migrate
 import flask_script
+import time
+from sqlalchemy import func
 
 from realtime.database import models
 from realtime.database.adapter import db
@@ -25,7 +28,7 @@ def runserver(debug=True, use_reloader=True):
 
 @manager.command
 def add():
-    for i in range(0, 10):
+    for i in range(0, 40):
         u = Updates(message='Added from command-line')
         with app.app_context():
             print('Committing to database ...')
@@ -37,14 +40,17 @@ def add():
 @manager.command
 def update():
     with app.app_context():
-        for update in (
+        while True:
+            update = (
                 db.session.query(Updates)
-                        .order_by(Updates.id.desc())
-                        .limit(10)
-        ):
+                            .order_by(func.random())
+                            .first()
+            )
             update.message = ''.join(random.choice(string.ascii_lowercase)
                                      for x in range(20))
+            update.timestamp = datetime.now()
             db.session.commit()
+            time.sleep(0.1)
 
 
 @manager.command

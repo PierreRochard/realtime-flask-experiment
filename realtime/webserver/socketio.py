@@ -10,26 +10,15 @@ socketio = SocketIO(app)
 
 
 @socketio.on('connect', namespace='/')
-def on_connect():
-    print('SocketIO connect /')
-
-
-@socketio.on('disconnect', namespace='/')
-def on_disconnect():
-    print('SocketIO disconnect /')
-
-
-@socketio.on('connect', namespace='/browser')
 def on_connect_browser():
     session['socket_io_id'] = request.sid
     new_socket_io_session = dict(session)
     new_socket_io_session = SocketIoSessions(**new_socket_io_session)
     db.session.add(new_socket_io_session)
     db.session.commit()
-    print('SocketIO connect /browser')
 
 
-@socketio.on('ids', namespace='/browser')
+@socketio.on('ids', namespace='/')
 def on_message(message):
     for table_name in message:
         for row_id in message[table_name]:
@@ -39,7 +28,7 @@ def on_message(message):
             db.session.commit()
 
 
-@socketio.on('disconnect', namespace='/browser')
+@socketio.on('disconnect', namespace='/')
 def on_disconnect_browser():
     (
         db.session.query(SocketIoSessions)
@@ -52,5 +41,3 @@ def on_disconnect_browser():
             .delete()
     )
     db.session.commit()
-
-    print('SocketIO disconnect /browser')

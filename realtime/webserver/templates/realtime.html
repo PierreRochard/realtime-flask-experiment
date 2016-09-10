@@ -4,7 +4,7 @@
     <script src="{{url_for('static', filename='js/socket.io-1.4.5.js')}}"></script>
     <script>
         var list_columns = {{ list_columns|safe }};
-        var socket = io.connect('/browser', {
+        var socket = io.connect('/', {
             'reconnection': true,
             'reconnectionDelay': 500,
             'randomizationFactor': 0.5,

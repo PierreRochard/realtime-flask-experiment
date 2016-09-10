@@ -13,6 +13,7 @@ The install.sh assumes that you are on your local dev pg instance that doens't h
 ```
 bash install.sh
 python manage.py runserver
-Open your browser and navigate to localhost:5001
 python manage.py add
+python manage.py update
+Open your browser and navigate to localhost:5001
 ```
