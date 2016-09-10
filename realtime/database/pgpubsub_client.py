@@ -42,8 +42,6 @@ def process_message(e):
                 .all()
         )
         for client, in socket_io_clients:
-            print(client)
-            print(data['row'])
             socketio.emit('update',
                           data['row'],
                           namespace='/browser',
