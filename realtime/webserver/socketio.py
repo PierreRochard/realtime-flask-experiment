@@ -4,7 +4,7 @@ from flask_socketio import SocketIO
 
 from realtime.webserver.webapp import app
 from realtime.database.adapter import db
-from realtime.database.models import SocketIoSessions
+from realtime.database.models import SocketIoSessions, SessionRows
 
 socketio = SocketIO(app)
 
@@ -31,16 +31,26 @@ def on_connect_browser():
 
 @socketio.on('ids', namespace='/browser')
 def on_message(message):
-    print(message)
+    for table_name in message:
+        for row_id in message[table_name]:
+            new_row = SessionRows(row_id=row_id, table_name=table_name,
+                                  socket_io_id=request.sid)
+            db.session.add(new_row)
+            db.session.commit()
 
 
 @socketio.on('disconnect', namespace='/browser')
 def on_disconnect_browser():
-    disconnected_session = (
+    (
         db.session.query(SocketIoSessions)
-            .filter(SocketIoSessions.socket_io_id == session['socket_io_id'])
-            .one()
+            .filter(SocketIoSessions.socket_io_id == request.sid)
+            .delete()
     )
-    db.session.delete(disconnected_session)
+    (
+        db.session.query(SessionRows)
+            .filter(SessionRows.socket_io_id == request.sid)
+            .delete()
+    )
     db.session.commit()
+
     print('SocketIO disconnect /browser')

@@ -18,10 +18,10 @@ BEGIN
     id = OLD.id;
     json_record = row_to_json(OLD);
   END IF;
-  payload = json_build_object('table', TG_TABLE_NAME, 'id', id, 'type', TG_OP, 'row', json_record)::text;
+  payload = json_build_object('table_name', TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, 'id', id, 'type', TG_OP, 'row', json_record)::text;
   payload_size = octet_length(payload);
   IF payload_size >= 8000 THEN
-    payload = json_build_object('table', TG_TABLE_NAME, 'id', id, 'type', TG_OP)::text;
+    payload = json_build_object('table_name', TG_TABLE_SCHEMA || '.' || TG_TABLE_NAME, 'id', id, 'type', TG_OP)::text;
   END IF;
   PERFORM pg_notify('table_update', payload);
   RETURN NEW;

@@ -1,3 +1,6 @@
+import random
+import string
+
 import flask_migrate
 import flask_script
 
@@ -29,6 +32,19 @@ def add():
             db.session.add(u)
             db.session.commit()
         print('Added.')
+
+
+@manager.command
+def update():
+    with app.app_context():
+        for update in (
+                db.session.query(Updates)
+                        .order_by(Updates.id.desc())
+                        .limit(10)
+        ):
+            update.message = ''.join(random.choice(string.ascii_lowercase)
+                                     for x in range(20))
+            db.session.commit()
 
 
 @manager.command

@@ -4,6 +4,8 @@ import eventlet
 import pgpubsub
 
 from realtime.webserver.webapp import app
+from realtime.database.adapter import db
+from realtime.database.models import SessionRows
 from realtime.webserver.socketio import socketio
 
 eventlet.monkey_patch()
@@ -23,6 +25,7 @@ def listen_thread():
 
 
 def process_message(e):
+
     data = json.loads(e.payload)
     with open('output.json', 'w') as output:
         json.dump(data, output, indent=4, sort_keys=True)
@@ -31,7 +34,20 @@ def process_message(e):
     if data['type'] == 'INSERT':
         socketio.emit('insert', data['row'], namespace='/browser')
     elif data['type'] == 'UPDATE':
-        socketio.emit('update', data['row'], namespace='/browser')
+        socket_io_clients = (
+            db.session.query(SessionRows.socket_io_id)
+                .filter(SessionRows.row_id == data['id'])
+                .filter(SessionRows.table_name == data['table_name'])
+                .group_by(SessionRows.socket_io_id)
+                .all()
+        )
+        for client, in socket_io_clients:
+            print(client)
+            print(data['row'])
+            socketio.emit('update',
+                          data['row'],
+                          namespace='/browser',
+                          room=client)
     elif data['type'] == 'DELETE':
         socketio.emit('delete', data['row'], namespace='/browser')
 

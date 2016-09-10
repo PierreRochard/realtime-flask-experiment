@@ -14,6 +14,8 @@ admin = Admin(name='realtime', template_mode='bootstrap3', url='/')
 
 class RealtimeModelView(ModelView):
     list_template = 'realtime.html'
+    column_default_sort = ('id', True)
+    column_display_pk = True
 
     def pre_render_function(self, data):
         if not session.get('session_id'):
@@ -36,7 +38,6 @@ class RealtimeModelView(ModelView):
         table_name = str(self.model.__table__)
         ids = [self.get_pk_value(m) for m in data]
         ids = json.dumps({table_name: ids})
-        print(ids)
         self._template_args['ids'] = ids
         self._template_args['session_id'] = session['session_id']
 

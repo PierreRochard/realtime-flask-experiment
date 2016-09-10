@@ -107,7 +107,7 @@
             </tr>
         </thead>
         {% for row in data %}
-        <tr id="{{ row.id }}">
+        <tr id="row-{{ row.id }}">
             {% block list_row scoped %}
                 {% if actions %}
                 <td>
@@ -155,7 +155,7 @@
                     {%- endif -%}
                 {% endblock %}
                 {% for c, name in list_columns %}
-                    <td id="{{c}}" class="col-{{c}}">
+                    <td id="{{c}}-{{ row.id }}" class="col-{{c}}">
                     {% if admin_view.is_editable(c) %}
                         {% if form.csrf_token %}
                         {{ form[c](pk=get_pk_value(row), value=get_value(row, c), csrf=form.csrf_token._value()) }}

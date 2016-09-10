@@ -40,6 +40,6 @@ class SessionRows(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     row_id = db.Column(db.Integer)
-    tablename = db.Column(db.String)
+    table_name = db.Column(db.String)
 
     socket_io_id = db.Column(db.String)

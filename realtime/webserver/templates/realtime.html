@@ -20,7 +20,7 @@
         });
         socket.on('insert', function (data) {
             var new_row = document.createElement('tr');
-            new_row.setAttribute("id", data['id']);
+            new_row.setAttribute("id", 'row-' + data['id']);
             var checkbox_cell = document.createElement('td');
             new_row.appendChild(checkbox_cell);
             var actions_cell = document.createElement('td');
@@ -28,12 +28,20 @@
             for (let column of list_columns) {
                 column = column.toLowerCase();
                 var column_cell = document.createElement('td');
-                column_cell.setAttribute('id', typeof(column));
+                column_cell.setAttribute('id', column + '-' + data['id']);
                 column_cell.setAttribute('class', 'col-' + column);
-                column_cell.innerText = data[column];
+                column_cell.textContent = data[column];
                 new_row.appendChild(column_cell);
             }
             document.getElementById('flask-admin-table').lastChild.appendChild(new_row);
+        });
+        socket.on('update', function (data) {
+            for (let column of list_columns) {
+                column = column.toLowerCase();
+                console.log(column);
+                var existing_cell = document.getElementById(column + '-' + data['id'])
+                existing_cell.textContent = data[column]
+            }
         });
     </script>
 {% endblock %}
