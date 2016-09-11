@@ -15,24 +15,6 @@ class Updates(db.Model):
         return r'<Updates "%s" at %s>' % (self.message, self.timestamp)
 
 
-class FlaskSessions(db.Model):
-    __bind_key__ = 'sessions_db'
-    __tablename__ = 'flask_sessions'
-
-    session_id = db.Column(db.String, primary_key=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
-
-class SocketIoSessions(db.Model):
-    __bind_key__ = 'sessions_db'
-    __tablename__ = 'socket_io_sessions'
-
-    socket_io_id = db.Column(db.String, primary_key=True)
-    created_at = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-
-    session_id = db.Column(db.String)
-
-
 class SessionRows(db.Model):
     __bind_key__ = 'sessions_db'
     __tablename__ = 'session_rows'

@@ -11,7 +11,7 @@ from realtime.database import models
 from realtime.database.adapter import db
 from realtime.database.models import Updates
 import realtime.database.pgpubsub_client
-from realtime.webserver.socketio import socketio
+from realtime.webserver.socket_io import socket_io
 from realtime.webserver.webapp import app
 
 manager = flask_script.Manager(app)
@@ -23,7 +23,7 @@ manager.add_command('db', flask_migrate.MigrateCommand)
 def runserver(debug=True, use_reloader=True):
     db.drop_all(bind='sessions_db')
     db.create_all(bind='sessions_db')
-    socketio.run(app, port=5001, debug=debug, use_reloader=use_reloader)
+    socket_io.run(app, port=5001, debug=debug, use_reloader=use_reloader)
 
 
 @manager.command

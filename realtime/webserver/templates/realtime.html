@@ -15,8 +15,7 @@
             socket.disconnect();
         };
         socket.on('connect', function () {
-            console.log('SocketIO connected {{ session_id }}.');
-            socket.emit('ids', {{ ids|safe }})
+            socket.emit('row_ids', {{ get_row_ids(data, get_pk_value)|safe }})
         });
         socket.on('insert', function (data) {
             var new_row = document.createElement('tr');
@@ -39,7 +38,7 @@
             for (let column of list_columns) {
                 column = column.toLowerCase();
                 console.log(column);
-                var existing_cell = document.getElementById(column + '-' + data['id'])
+                var existing_cell = document.getElementById(column + '-' + data['id']);
                 existing_cell.textContent = data[column]
             }
         });

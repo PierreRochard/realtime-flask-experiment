@@ -6,7 +6,7 @@ import pgpubsub
 from realtime.webserver.webapp import app
 from realtime.database.adapter import db
 from realtime.database.models import SessionRows
-from realtime.webserver.socketio import socketio
+from realtime.webserver.socket_io import socket_io
 
 eventlet.monkey_patch()
 spawn = eventlet.spawn
@@ -16,23 +16,22 @@ def listen_thread():
     pubsub = pgpubsub.connect(user='Rochard', database='realtime')
     pubsub.listen('table_update')
     while True:
-        for e in pubsub.events(yield_timeouts=True):
-            if e is None:
+        for event in pubsub.events(yield_timeouts=True):
+            if event is None:
                 pass
             else:
                 with app.app_context():
-                    process_message(e)
+                    process_message(event)
 
 
-def process_message(e):
-
-    data = json.loads(e.payload)
+def process_message(event):
+    data = json.loads(event.payload)
     with open('output.json', 'w') as output:
         json.dump(data, output, indent=4, sort_keys=True)
     # TODO: Query the table if 'row' is not in the data dictionary
     # (due to pg_notify's 8kB payload limit)
     if data['type'] == 'INSERT':
-        socketio.emit('insert', data['row'], namespace='/')
+        socket_io.emit('insert', data['row'], namespace='/')
     elif data['type'] == 'UPDATE':
         socket_io_clients = (
             db.session.query(SessionRows.socket_io_id)
@@ -42,12 +41,12 @@ def process_message(e):
                 .all()
         )
         for client, in socket_io_clients:
-            socketio.emit('update',
-                          data['row'],
-                          namespace='/',
-                          room=client)
+            socket_io.emit('update',
+                           data['row'],
+                           namespace='/',
+                           room=client)
     elif data['type'] == 'DELETE':
-        socketio.emit('delete', data['row'], namespace='/')
+        socket_io.emit('delete', data['row'], namespace='/')
 
 
 @app.before_first_request
