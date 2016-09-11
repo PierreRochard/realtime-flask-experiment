@@ -4,7 +4,7 @@ import eventlet
 import pgpubsub
 
 from realtime.database.adapter import db
-from realtime.database.models import SessionRows
+from realtime.database.models import Subscriptions
 from realtime.webserver.socket_io import socket_io
 from realtime.webserver.webapp import app
 
@@ -14,7 +14,7 @@ spawn = eventlet.spawn
 
 def listen_thread():
     pubsub = pgpubsub.connect(database='realtime')
-    pubsub.listen('table_update')
+    pubsub.listen('todo_items_table_update')
     while True:
         for event in pubsub.events(yield_timeouts=True):
             if event is None:
@@ -34,10 +34,10 @@ def process_message(event):
         socket_io.emit('insert', data['row'], namespace='/')
     elif data['type'] == 'UPDATE':
         socket_io_clients = (
-            db.session.query(SessionRows.socket_io_id)
-                .filter(SessionRows.row_id == data['id'])
-                .filter(SessionRows.table_name == data['table_name'])
-                .group_by(SessionRows.socket_io_id)
+            db.session.query(Subscriptions.socket_io_id)
+                .filter(Subscriptions.record_id == data['id'])
+                .filter(Subscriptions.table_name == data['table_name'])
+                .group_by(Subscriptions.socket_io_id)
                 .all()
         )
         for client, in socket_io_clients:

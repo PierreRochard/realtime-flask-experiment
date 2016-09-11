@@ -12,8 +12,7 @@ PostgreSQL part is largely from https://blog.andyet.com/2015/04/06/postgres-pubs
 The install.sh assumes that you are on your local dev pg instance that doens't have a password. If that's not the case you'll have to open up a terminal and modify the commands as needed.
 ```
 bash install.sh
-python manage.py runserver
-python manage.py add
-python manage.py update
+bash run.sh
+bash test.sh
 Open your browser and navigate to localhost:5001
 ```

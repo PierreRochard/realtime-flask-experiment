@@ -12,4 +12,6 @@ python manage.py db migrate;
 
 python manage.py db upgrade;
 
+psql -d realtime -f realtime/database/create_functions.sql
+
 psql -d realtime -f realtime/database/create_triggers.sql

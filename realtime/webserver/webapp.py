@@ -16,9 +16,9 @@ views.admin.init_app(app)
 
 @app.context_processor
 def utility_processor():
-    def get_row_ids(data, get_pk_value):
+    def get_record_ids(data, get_pk_value):
         table_name = str(data[0].__table__)
-        row_ids = [get_pk_value(m) for m in data]
-        row_ids = json.dumps({table_name: row_ids})
-        return row_ids
-    return dict(get_row_ids=get_row_ids)
+        record_ids = [get_pk_value(m) for m in data]
+        record_ids = json.dumps({table_name: record_ids})
+        return record_ids
+    return dict(get_record_ids=get_record_ids)

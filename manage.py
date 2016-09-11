@@ -9,7 +9,7 @@ from sqlalchemy import func
 
 from realtime.database import models
 from realtime.database.adapter import db
-from realtime.database.models import Updates
+from realtime.database.models import TodoItems
 import realtime.database.pgpubsub_client
 from realtime.webserver.socket_io import socket_io
 from realtime.webserver.webapp import app
@@ -29,12 +29,10 @@ def runserver(debug=True, use_reloader=True):
 @manager.command
 def add():
     for i in range(0, 40):
-        u = Updates(message='Added from command-line')
+        u = TodoItems(title='Todo Item')
         with app.app_context():
-            print('Committing to database ...')
             db.session.add(u)
             db.session.commit()
-        print('Added.')
 
 
 @manager.command
@@ -42,11 +40,11 @@ def update():
     with app.app_context():
         while True:
             update = (
-                db.session.query(Updates)
+                db.session.query(TodoItems)
                             .order_by(func.random())
                             .first()
             )
-            update.message = ''.join(random.choice(string.ascii_lowercase)
+            update.title = ''.join(random.choice(string.ascii_lowercase)
                                      for x in range(20))
             update.timestamp = datetime.now()
             db.session.commit()
@@ -56,7 +54,7 @@ def update():
 @manager.command
 def delete():
     with app.app_context():
-        models.Updates.query.delete()
+        models.TodoItems.query.delete()
         db.session.commit()
     print('Deleted all updates.')
 

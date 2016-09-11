@@ -15,7 +15,7 @@
             socket.disconnect();
         };
         socket.on('connect', function () {
-            socket.emit('row_ids', {{ get_row_ids(data, get_pk_value)|safe }})
+            socket.emit('record_ids', {{ get_record_ids(data, get_pk_value)|safe }})
         });
         socket.on('insert', function (data) {
             var new_row = document.createElement('tr');
