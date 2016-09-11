@@ -3,17 +3,17 @@ import json
 import eventlet
 import pgpubsub
 
-from realtime.webserver.webapp import app
 from realtime.database.adapter import db
 from realtime.database.models import SessionRows
 from realtime.webserver.socket_io import socket_io
+from realtime.webserver.webapp import app
 
 eventlet.monkey_patch()
 spawn = eventlet.spawn
 
 
 def listen_thread():
-    pubsub = pgpubsub.connect(user='Rochard', database='realtime')
+    pubsub = pgpubsub.connect(database='realtime')
     pubsub.listen('table_update')
     while True:
         for event in pubsub.events(yield_timeouts=True):
