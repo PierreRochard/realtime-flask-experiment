@@ -1,4 +1,6 @@
 eventlet
 flask
+Flask-Admin
 Flask-SocketIO
+Flask-SQLAlchemy
 pgpubsub
