@@ -1,7 +1,7 @@
 {% extends 'admin/model/list.html' %}
 
 {% block realtime %}
-    <script src="{{url_for('static', filename='js/socket.io-1.4.5.js')}}"></script>
+    <script src="{{url_for('static', filename='js/socket.io-4.4.0.js')}}"></script>
     <script>
         var list_columns = {{ list_columns|safe }};
         var socket = io.connect('/', {
@@ -37,7 +37,6 @@
         socket.on('update', function (data) {
             for (let column of list_columns) {
                 column = column.toLowerCase();
-                console.log(column);
                 var existing_cell = document.getElementById(column + '-' + data['id']);
                 existing_cell.textContent = data[column]
             }
